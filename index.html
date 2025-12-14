@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -179,6 +180,7 @@
       margin: 0 8px;
       text-align: center;
       cursor: pointer;
+      position: relative;
     }
     
     .story-avatar {
@@ -206,6 +208,185 @@
       font-size: 12px;
       margin-top: 6px;
       color: var(--text-gray);
+      max-width: 70px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    /* Story Viewer */
+    .story-viewer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .story-viewer-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .story-viewer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
+    
+    .story-viewer-info {
+      flex: 1;
+      color: white;
+    }
+    
+    .story-viewer-username {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .story-viewer-time {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .btn-close-story {
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
+    
+    .story-viewer-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    /* Story Editor */
+    .story-editor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .story-editor-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.5);
+    }
+    
+    .story-editor-title {
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .story-editor-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .story-editor-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .story-editor-tools {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .story-tool-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .story-editor-footer {
+      padding: 20px;
+      background: rgba(0,0,0,0.5);
+    }
+    
+    .story-caption-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      padding: 12px;
+      outline: none;
+    }
+    
+    .story-caption-input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .story-share-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .story-share-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 24px;
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .story-share-btn.primary {
+      background: white;
+      color: #000;
     }
     
     /* Feed */
@@ -424,6 +605,17 @@
       display: flex;
       align-items: center;
       gap: 14px;
+    }
+    
+    .chat-header-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .chat-header-info {
+      flex: 1;
     }
     
     .btn-back {
@@ -936,12 +1128,57 @@
   <div id="chatOverlay" class="chat-overlay hidden">
     <div class="chat-header">
       <i class="fas fa-arrow-left btn-back" onclick="closeChatOverlay()"></i>
-      <div class="chat-header-name" id="chatHeaderName">Chat</div>
+      <img id="chatHeaderAvatar" class="chat-header-avatar" src="">
+      <div class="chat-header-info">
+        <div class="chat-header-name" id="chatHeaderName">Chat</div>
+      </div>
     </div>
     <div class="messages-container" id="messagesContainer"></div>
     <div class="chat-input-container">
       <input type="text" id="messageInput" class="chat-input" placeholder="Type a message...">
       <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- Story Viewer -->
+  <div id="storyViewer" class="story-viewer hidden">
+    <div class="story-viewer-header">
+      <img id="storyViewerAvatar" class="story-viewer-avatar" src="">
+      <div class="story-viewer-info">
+        <div class="story-viewer-username" id="storyViewerUsername">Username</div>
+        <div class="story-viewer-time" id="storyViewerTime">2h ago</div>
+      </div>
+      <i class="fas fa-times btn-close-story" onclick="closeStoryViewer()"></i>
+    </div>
+    <img id="storyViewerImage" class="story-viewer-image" src="">
+  </div>
+
+  <!-- Story Editor -->
+  <div id="storyEditor" class="story-editor hidden">
+    <div class="story-editor-header">
+      <i class="fas fa-times" style="color: white; font-size: 24px; cursor: pointer;" onclick="closeStoryEditor()"></i>
+      <div class="story-editor-title">Add to story</div>
+      <div></div>
+    </div>
+    <div class="story-editor-content">
+      <img id="storyEditorImage" class="story-editor-image" src="">
+      <div class="story-editor-tools">
+        <button class="story-tool-btn" title="Text"><i class="fas fa-font"></i></button>
+        <button class="story-tool-btn" title="Sticker"><i class="fas fa-smile"></i></button>
+        <button class="story-tool-btn" title="Draw"><i class="fas fa-pen"></i></button>
+        <button class="story-tool-btn" title="Music"><i class="fas fa-music"></i></button>
+      </div>
+    </div>
+    <div class="story-editor-footer">
+      <input type="text" id="storyCaptionInput" class="story-caption-input" placeholder="Add a caption...">
+      <div class="story-share-options">
+        <button class="story-share-btn" onclick="closeStoryEditor()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+        <button class="story-share-btn primary" onclick="shareStory()">
+          <i class="fas fa-paper-plane"></i> Share to Story
+        </button>
+      </div>
     </div>
   </div>
 
@@ -989,7 +1226,9 @@
     let currentView = 'home';
     let currentChatUser = null;
     let currentChatType = null;
+    let currentChatUserData = null;
     let uploadedImageData = null;
+    let storyImageData = null;
 
     // Image Processing Helper
     function processImage(file, maxWidth = 800, quality = 0.7) {
@@ -1170,7 +1409,7 @@
     // Stories
     async function loadStories() {
       const storiesRef = ref(db, 'stories');
-      onValue(storiesRef, (snapshot) => {
+      onValue(storiesRef, async (snapshot) => {
         const rail = document.getElementById('storiesRail');
         rail.innerHTML = `
           <div class="story-item" onclick="handleStoryUpload()">
@@ -1181,19 +1420,28 @@
         
         if (snapshot.exists()) {
           const stories = snapshot.val();
+          const storyUserIds = new Set();
+          
+          // Get unique user IDs with stories
           Object.values(stories).forEach(story => {
             if (story.uid !== currentUser.uid) {
-              get(ref(db, `users/${story.uid}`)).then(userSnap => {
-                const userData = userSnap.val();
-                rail.innerHTML += `
-                  <div class="story-item">
-                    <img src="${userData.photo}" class="story-avatar">
-                    <div class="story-username">${userData.username}</div>
-                  </div>
-                `;
-              });
+              storyUserIds.add(story.uid);
             }
           });
+          
+          // Load user data for each story
+          for (let uid of storyUserIds) {
+            const userSnap = await get(ref(db, `users/${uid}`));
+            if (userSnap.exists()) {
+              const userData = userSnap.val();
+              rail.innerHTML += `
+                <div class="story-item" onclick='viewUserStory("${uid}")'>
+                  <img src="${userData.photo}" class="story-avatar">
+                  <div class="story-username">${userData.username}</div>
+                </div>
+              `;
+            }
+          }
         }
       });
     }
@@ -1205,18 +1453,74 @@
       input.onchange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-          const imageData = await processImage(file);
-          const storyRef = push(ref(db, 'stories'));
-          await set(storyRef, {
-            image: imageData,
-            uid: currentUser.uid,
-            timestamp: Date.now()
-          });
-          alert('Story uploaded!');
+          storyImageData = await processImage(file);
+          document.getElementById('storyEditorImage').src = storyImageData;
+          document.getElementById('storyEditor').classList.remove('hidden');
         }
       };
       input.click();
     };
+
+    window.closeStoryEditor = function() {
+      document.getElementById('storyEditor').classList.add('hidden');
+      document.getElementById('storyCaptionInput').value = '';
+      storyImageData = null;
+    };
+
+    window.shareStory = async function() {
+      if (!storyImageData) return;
+      
+      const storyRef = push(ref(db, 'stories'));
+      await set(storyRef, {
+        image: storyImageData,
+        uid: currentUser.uid,
+        timestamp: Date.now(),
+        caption: document.getElementById('storyCaptionInput').value || ''
+      });
+      
+      closeStoryEditor();
+      alert('Story shared!');
+    };
+
+    window.viewUserStory = async function(userId) {
+      const storiesRef = ref(db, 'stories');
+      const snapshot = await get(storiesRef);
+      
+      if (snapshot.exists()) {
+        const stories = snapshot.val();
+        const userStories = Object.values(stories).filter(s => s.uid === userId);
+        
+        if (userStories.length > 0) {
+          const story = userStories[0];
+          const userSnap = await get(ref(db, `users/${userId}`));
+          const userData = userSnap.val();
+          
+          document.getElementById('storyViewerAvatar').src = userData.photo;
+          document.getElementById('storyViewerUsername').textContent = userData.username;
+          document.getElementById('storyViewerImage').src = story.image;
+          
+          const timeAgo = getTimeAgo(story.timestamp);
+          document.getElementById('storyViewerTime').textContent = timeAgo;
+          
+          document.getElementById('storyViewer').classList.remove('hidden');
+        }
+      }
+    };
+
+    window.closeStoryViewer = function() {
+      document.getElementById('storyViewer').classList.add('hidden');
+    };
+
+    function getTimeAgo(timestamp) {
+      const now = Date.now();
+      const diff = now - timestamp;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      
+      if (days > 0) return `${days}d ago`;
+      if (hours > 0) return `${hours}h ago`;
+      return 'Just now';
+    }
 
     // Feed
     async function loadFeed() {
@@ -1449,9 +1753,19 @@
       }
     }
 
-    window.openChat = function(userId, userName) {
+    window.openChat = async function(userId, userName) {
       currentChatUser = userId;
       currentChatType = userId === 'global' ? 'global' : 'private';
+      
+      // Load user data for private chats
+      if (currentChatType === 'private') {
+        const userSnap = await get(ref(db, `users/${userId}`));
+        currentChatUserData = userSnap.val();
+        document.getElementById('chatHeaderAvatar').src = currentChatUserData.photo;
+      } else {
+        document.getElementById('chatHeaderAvatar').src = 'https://ui-avatars.com/api/?name=Global&background=eab308&color=fff';
+      }
+      
       document.getElementById('chatHeaderName').textContent = userName;
       document.getElementById('chatOverlay').classList.remove('hidden');
       loadMessages();
@@ -1643,4 +1957,4 @@
     };
   </script>
 </body>
-</html>
+     </html>
